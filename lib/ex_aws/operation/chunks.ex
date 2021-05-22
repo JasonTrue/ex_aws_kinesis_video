@@ -37,20 +37,22 @@ defimpl ExAws.Operation, for: ExAws.Operation.Chunks do
     ]
 
     case ExAws.Request.request(
-        operation.http_method,
-        url,
-        operation.data,
-        headers,
-        config,
-        operation.service
-      ) do
-
+           operation.http_method,
+           url,
+           operation.data,
+           headers,
+           config,
+           operation.service
+         ) do
       {:ok, %{body: body}} ->
         body = operation.parser.(body)
         {:ok, body}
+
       {:error, reason} ->
         {:error, %{reason: reason}}
-      error -> {:error, %{reason: error}}
+
+      error ->
+        {:error, %{reason: error}}
     end
   end
 

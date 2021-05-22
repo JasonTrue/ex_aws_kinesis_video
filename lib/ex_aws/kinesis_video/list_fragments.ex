@@ -15,8 +15,10 @@ defmodule ExAws.KinesisVideo.ListFragments do
       %{"Fragments" => fragments, "NextToken" => next_token} =
         ExAws.KinesisVideo.list_fragments(request, fun_opts)
         |> ExAws.request!(config)
+
       {fragments, next_token}
     end
+
     # list_fragments or the unfold accumulator will be one of the following:
     # a tuple containing { list_with_one_or_more_items, next_token },
     # a tuple containing { [], nil = next_token } (No fragments left)
@@ -24,10 +26,16 @@ defmodule ExAws.KinesisVideo.ListFragments do
     #
     # Also possibly an error? but I'll burn that bridge when I come to it
     Stream.unfold(request_fun.(request, config), fn
-      {[head | rest], next_token} -> {head, {rest, next_token}}
-      {[], nil} -> nil
+      {[head | rest], next_token} ->
+        {head, {rest, next_token}}
+
+      {[], nil} ->
+        nil
+
       {[], next_token} ->
-        {[head | rest], new_token} = request_fun.(%__MODULE__{request | next_token: next_token}, config)
+        {[head | rest], new_token} =
+          request_fun.(%__MODULE__{request | next_token: next_token}, config)
+
         {head, {rest, new_token}}
     end)
   end
@@ -38,7 +46,7 @@ defimpl ExAws.KinesisVideo.Protocol, for: ExAws.KinesisVideo.ListFragments do
 
   @moduledoc """
 
-"""
+  """
 
   def to_request_payload(%ExAws.KinesisVideo.ListFragments{
         stream_name: stream_name,

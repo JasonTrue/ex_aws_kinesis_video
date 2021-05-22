@@ -9,7 +9,7 @@ defmodule ExAws.KinesisVideo.MixProject do
     [
       app: :jasontrue_ex_aws_kinesis_video,
       version: @version,
-      elixir: "~> 1.11",
+      elixir: "~> 1.10",
       elixirc_paths: elixirc_paths(Mix.env()),
       description: "AWS Kinesis Video Client (compatible with ExAws)",
       name: @name,
@@ -18,7 +18,9 @@ defmodule ExAws.KinesisVideo.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       dialyzer: [
-        plt_add_apps: [:ex_unit, :sweet_xml]
+        plt_add_apps: [:ex_unit],
+        plt_file:
+          {:no_warn, "priv/plts/dialyzer_#{System.version()}_otp#{System.otp_release()}.plt"}
       ]
     ]
   end
