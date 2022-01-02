@@ -14,7 +14,12 @@ defmodule ExAws.KinesisVideo.MixProject do
       description: "AWS Kinesis Video Client (compatible with ExAws)",
       name: @name,
       package: package(),
-      docs: [main: @name, source_ref: "v#{@version}", source_url: @source_url, extras: ["README.md"]],
+      docs: [
+        main: @name,
+        source_ref: "v#{@version}",
+        source_url: @source_url,
+        extras: ["README.md"]
+      ],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
