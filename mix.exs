@@ -14,13 +14,27 @@ defmodule ExAws.KinesisVideo.MixProject do
       description: "AWS Kinesis Video Client (compatible with ExAws)",
       name: @name,
       package: package(),
-      docs: [main: @name, source_ref: "v#{@version}", source_url: @source_url],
+      docs: [main: @name, source_ref: "v#{@version}", source_url: @source_url, extras: ["README.md"]],
       start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
       deps: deps(),
       dialyzer: [
         plt_add_apps: [:ex_unit],
         plt_file:
           {:no_warn, "priv/plts/dialyzer_#{System.version()}_otp#{System.otp_release()}.plt"}
+      ]
+    ]
+  end
+
+  def aliases do
+    [
+      precommit: ["deps.get", "format"],
+      prepush: [
+        "deps.get",
+        "format --check-formatted",
+        "compile --warnings-as-errors",
+        "cmd mix test",
+        "dialyzer"
       ]
     ]
   end
