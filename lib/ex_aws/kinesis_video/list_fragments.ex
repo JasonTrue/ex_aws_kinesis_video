@@ -44,9 +44,7 @@ end
 defimpl ExAws.KinesisVideo.Protocol, for: ExAws.KinesisVideo.ListFragments do
   require Logger
 
-  @moduledoc """
-
-  """
+  @moduledoc false
 
   def to_request_payload(%ExAws.KinesisVideo.ListFragments{
         stream_name: stream_name,

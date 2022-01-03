@@ -54,24 +54,38 @@ defmodule ExAws.KinesisVideo do
     request("getMediaForFragmentList", data)
   end
 
-  def get_data_endpoint_by_stream_name(api_name, stream_name, _opts \\ []) do
-    body = %{
-      "APIName" => translate_api_name(api_name),
-      "StreamName" => stream_name,
-      "StreamARN" => nil
+  @supported_endpoints [
+    :put_media,
+    :get_media,
+    :list_fragments,
+    :get_media_for_fragment_list,
+    :get_hls_streaming_session_url,
+    :get_dash_streaming_session_url,
+    :get_clip
+  ]
+  @doc """
+    A facade for [KinesisVideoStreams/GetDataEndpoint](https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_GetDataEndpoint.html)
+    that takes an api_name and stream_name.
+
+    `api_name`: :put_media | :get_media | :list_fragments | :get_media_for_fragment_list | :get_hls_streaming_session_url | :get_dash_streaming_session_url | :get_clip
+    `stream_name`: the stream name
+    `opts`: reserved for future use. Optional.
+  """
+
+  def get_data_endpoint_by_stream_name(api_name, stream_name, _opts \\ [])
+      when api_name in @supported_endpoints do
+    data = %__MODULE__.GetDataEndpoint{
+      api_name: translate_api_name(api_name),
+      stream_name: stream_name
     }
 
-    request("getDataEndpoint", body, %{
+    request("getDataEndpoint", data, %{
       parser: &ExAws.KinesisVideo.Parsers.parse_data_endpoint_response/1
     })
   end
 
-  defp translate_api_name(:list_fragments), do: "LIST_FRAGMENTS"
-  defp translate_api_name(:get_media_for_fragment_list), do: "GET_MEDIA_FOR_FRAGMENT_LIST"
-
-  defp translate_api_name(api_name) do
-    Logger.warn("Unrecognized API name; passing literally")
-    api_name
+  defp translate_api_name(api_name) when is_atom(api_name) do
+    to_string(api_name) |> String.upcase()
   end
 
   defp scrub_fragment_list(request = %{"Fragments" => fragments}) do
